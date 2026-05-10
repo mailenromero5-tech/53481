@@ -58,28 +58,28 @@ GitBash
 git clone https://github.com/mailenromero5-tech/53481.git
 2. Luego nos tenemos que dirigir al directorio lo cual escribimos: 
 cd 53481
-![Clonar usando GIT](image.png)
+![Clonar usando GIT](capturas/image.png)
 
 3. Y luego escribimos lo siguiente para que se nos abra VS code:
 code .
 De otra manera, podemos hacerlo desde la ventana de comandos (cmd) y hacemos el mismo procedimiento
-![Clonar usando CMD](image-1.png)
-![](image-2.png)
+![Clonar usando CMD](capturas/image-1.png)
+![](capturas/image-2.png)
 
 # Uso del proyecto 
 Una vez configurado el proyecto, podemos ejecutar el analizador de la siguiente forma:
 1. Asegurarnos de tener los archivos de entrada en la carpeta inputs/. 
 
 2. Dentro del inputs/input.txt , podemos probar los ejemplos que tenemos (2 correctos, 2 incorrectos)
-![](image-3.png)
+![](capturas/image-3.png)
 
 3. Luego de colocar el ejemplo deseado en el inputs/input.txt ejecutamos el programa con Node.js desde la terminal de VS code (Ir a Terminal > Nueva terminal) y dentro de ella colocamos node index.js
-![](image-4.png)
-![](image-5.png)
+![](capturas/image-4.png)
+![](capturas/image-5.png)
 
 El resultado en un ejemplo corrcto es:
-![](image-6.png)
+![](capturas/image-6.png)
 
 Caso contrario, se muestra (analizando el inputs/EJEMPLOINCORRECTO2.txt)
-![](image-7.png)
+![](capturas/image-7.png)
 
