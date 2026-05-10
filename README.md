@@ -62,8 +62,8 @@ cd 53481
 
 3. Y luego escribimos lo siguiente para que se nos abra VS code:
 code .
+
 De otra manera, podemos hacerlo desde la ventana de comandos (cmd) y hacemos el mismo procedimiento
-![Clonar usando CMD](capturas/image-1.png)
 ![](capturas/image-2.png)
 
 # Uso del proyecto 
