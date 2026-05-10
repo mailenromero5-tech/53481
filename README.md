@@ -64,6 +64,7 @@ Pasos para ejecutarlo:
 2. Clonamos el repositorio dentro de una carpeta cualquira (en mi caso sera en una llamada "prueba"):
 
 git clone https://github.com/mailenromero5-tech/53481.git
+
 3. Luego nos tenemos que dirigir al directorio lo cual escribimos: 
 
 cd 53481
