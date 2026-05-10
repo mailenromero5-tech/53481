@@ -1,0 +1,51 @@
+Gramatica asignada en EBNF:
+formula = implication ;
+implication = disjunction [ "->" implication ] ;
+disjunction = conjunction { "|" conjunction } ;
+conjunction = negation { "^" negation } ;
+negation = "¬" negation | primary ;
+primary = variable | "(" formula ")" ;
+variable = letter { variable_char } ;
+variable_char = letter | digit ;
+letter = "A" | "B" | ... | "Z" | "a" | "b" | ... | "z" ;
+digit = "0" | "1" | ... | "9" ;
+operator = "→" | "v" | "^" ;
+unary_op = "¬" ;
+paren = "(" | ")" ;
+
+
+Gramatica en ANTLR (.g4):
+grammar LogicFormula;
+
+//Gramatica
+formula
+        :implication 
+        ; 
+
+implication
+         :disjunction (IMPLIES implication)?        #implica
+         ; 
+disjunction
+        :conjunction (OR conjunction)*               #disjun
+        ;
+conjunction
+        :negation (AND negation)*                   #conjunc
+        ;
+negation
+        : NOT negation                              #nega
+        | primary                                   #primaryrule
+        ; 
+primary 
+        : VARIABLE                                  #variableExpr
+        | LPAREN formula RPAREN        #parens 
+        ; 
+
+//Lexemas
+VARIABLE: [a-zA-Z][a-zA-Z0-9]* ;
+IMPLIES: '->' ;
+OR: '|';
+AND: '^' ;
+NOT:'¬';  
+LPAREN: '(' ;
+RPAREN: ')' ; 
+WS: [ \t\r\n]+ -> skip ;
