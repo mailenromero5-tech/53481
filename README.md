@@ -15,16 +15,6 @@ El analizador permite:
 - Traducir expresiones lógicas a JavaScript.
 
 # Aclaraciones IMPORTANTES
-- Para correr los ejemplos se debe seguir los siguientes pasos:
-
-1. Abrir una terminal en Visual Studio Code.
-
-2. Ingresar a la carpeta del proyecto:
-
-cd LOGICFORMULAPROYECTO
-
-3. Ejecutar colocando node index.js
-
 - Uso de | en lugar de v
 En la gramática se utilizó el símbolo | para la disyunción lógica porque ANTLR interpretaba la letra v como parte de una variable.
 
@@ -67,10 +57,15 @@ Una vez configurado el proyecto, podemos ejecutar el analizador de la siguiente 
 
 3. Luego de colocar el ejemplo ejecutamos el programa desde la Terminal. 
 
-ACLARACIÓN
+# ACLARACIÓN
+
 En la terminal debemos ingresar a la carpeta lo cual para ello escribimos:
 
 cd LOGICFORMULAPROYECTO
+
+Y luego: 
+
+node index.js
 
 El resultado en un ejemplo corrcto es:
 
