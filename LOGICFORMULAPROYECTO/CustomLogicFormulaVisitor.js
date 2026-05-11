@@ -55,6 +55,6 @@ export class CustomLogicFormulaVisitor extends LogicFormulaVisitor {
     }
     // primary : LPAREN formula RPAREN  #parens
     visitParens(ctx) {
-        return `(${this.visit(ctx.formula())})`;
+        return `(${this.visit(ctx.implication())})`;
     }
   }

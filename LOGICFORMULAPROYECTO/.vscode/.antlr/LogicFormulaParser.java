@@ -16,7 +16,7 @@ public class LogicFormulaParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		VARIABLE=1, IMPLIES=2, OR=3, AND=4, NOT=5, LPAREN=6, RPAREN=7, WS=8;
+		IMPLIES=1, OR=2, AND=3, UNARY_OP=4, LPAREN=5, RPAREN=6, VARIABLE=7, WS=8;
 	public static final int
 		RULE_formula = 0, RULE_implication = 1, RULE_disjunction = 2, RULE_conjunction = 3, 
 		RULE_negation = 4, RULE_primary = 5;
@@ -29,13 +29,13 @@ public class LogicFormulaParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, "'->'", "'|'", "'^'", "'\\u00AC'", "'('", "')'"
+			null, "'->'", "'|'", "'^'", "'\\u00AC'", "'('", "')'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "VARIABLE", "IMPLIES", "OR", "AND", "NOT", "LPAREN", "RPAREN", 
+			null, "IMPLIES", "OR", "AND", "UNARY_OP", "LPAREN", "RPAREN", "VARIABLE", 
 			"WS"
 		};
 	}
@@ -95,6 +95,7 @@ public class LogicFormulaParser extends Parser {
 		public ImplicationContext implication() {
 			return getRuleContext(ImplicationContext.class,0);
 		}
+		public TerminalNode EOF() { return getToken(LogicFormulaParser.EOF, 0); }
 		public FormulaContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -109,6 +110,8 @@ public class LogicFormulaParser extends Parser {
 			{
 			setState(12);
 			implication();
+			setState(13);
+			match(EOF);
 			}
 		}
 		catch (RecognitionException re) {
@@ -154,16 +157,16 @@ public class LogicFormulaParser extends Parser {
 			_localctx = new ImplicaContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(14);
+			setState(15);
 			disjunction();
-			setState(17);
+			setState(18);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==IMPLIES) {
 				{
-				setState(15);
-				match(IMPLIES);
 				setState(16);
+				match(IMPLIES);
+				setState(17);
 				implication();
 				}
 			}
@@ -216,21 +219,21 @@ public class LogicFormulaParser extends Parser {
 			_localctx = new DisjunContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(19);
+			setState(20);
 			conjunction();
-			setState(24);
+			setState(25);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==OR) {
 				{
 				{
-				setState(20);
-				match(OR);
 				setState(21);
+				match(OR);
+				setState(22);
 				conjunction();
 				}
 				}
-				setState(26);
+				setState(27);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -282,21 +285,21 @@ public class LogicFormulaParser extends Parser {
 			_localctx = new ConjuncContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(27);
+			setState(28);
 			negation();
-			setState(32);
+			setState(33);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==AND) {
 				{
 				{
-				setState(28);
-				match(AND);
 				setState(29);
+				match(AND);
+				setState(30);
 				negation();
 				}
 				}
-				setState(34);
+				setState(35);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -327,7 +330,7 @@ public class LogicFormulaParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class NegaContext extends NegationContext {
-		public TerminalNode NOT() { return getToken(LogicFormulaParser.NOT, 0); }
+		public TerminalNode UNARY_OP() { return getToken(LogicFormulaParser.UNARY_OP, 0); }
 		public NegationContext negation() {
 			return getRuleContext(NegationContext.class,0);
 		}
@@ -345,25 +348,25 @@ public class LogicFormulaParser extends Parser {
 		NegationContext _localctx = new NegationContext(_ctx, getState());
 		enterRule(_localctx, 8, RULE_negation);
 		try {
-			setState(38);
+			setState(39);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case NOT:
+			case UNARY_OP:
 				_localctx = new NegaContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(35);
-				match(NOT);
 				setState(36);
+				match(UNARY_OP);
+				setState(37);
 				negation();
 				}
 				break;
-			case VARIABLE:
 			case LPAREN:
+			case VARIABLE:
 				_localctx = new PrimaryruleContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(37);
+				setState(38);
 				primary();
 				}
 				break;
@@ -402,8 +405,8 @@ public class LogicFormulaParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class ParensContext extends PrimaryContext {
 		public TerminalNode LPAREN() { return getToken(LogicFormulaParser.LPAREN, 0); }
-		public FormulaContext formula() {
-			return getRuleContext(FormulaContext.class,0);
+		public ImplicationContext implication() {
+			return getRuleContext(ImplicationContext.class,0);
 		}
 		public TerminalNode RPAREN() { return getToken(LogicFormulaParser.RPAREN, 0); }
 		public ParensContext(PrimaryContext ctx) { copyFrom(ctx); }
@@ -413,14 +416,14 @@ public class LogicFormulaParser extends Parser {
 		PrimaryContext _localctx = new PrimaryContext(_ctx, getState());
 		enterRule(_localctx, 10, RULE_primary);
 		try {
-			setState(45);
+			setState(46);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case VARIABLE:
 				_localctx = new VariableExprContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(40);
+				setState(41);
 				match(VARIABLE);
 				}
 				break;
@@ -428,11 +431,11 @@ public class LogicFormulaParser extends Parser {
 				_localctx = new ParensContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(41);
-				match(LPAREN);
 				setState(42);
-				formula();
+				match(LPAREN);
 				setState(43);
+				implication();
+				setState(44);
 				match(RPAREN);
 				}
 				break;
@@ -452,36 +455,36 @@ public class LogicFormulaParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\b0\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\b1\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
-		"\u0005\u0007\u0005\u0001\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001"+
-		"\u0001\u0003\u0001\u0012\b\u0001\u0001\u0002\u0001\u0002\u0001\u0002\u0005"+
-		"\u0002\u0017\b\u0002\n\u0002\f\u0002\u001a\t\u0002\u0001\u0003\u0001\u0003"+
-		"\u0001\u0003\u0005\u0003\u001f\b\u0003\n\u0003\f\u0003\"\t\u0003\u0001"+
-		"\u0004\u0001\u0004\u0001\u0004\u0003\u0004\'\b\u0004\u0001\u0005\u0001"+
-		"\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0003\u0005.\b\u0005\u0001"+
-		"\u0005\u0000\u0000\u0006\u0000\u0002\u0004\u0006\b\n\u0000\u0000.\u0000"+
-		"\f\u0001\u0000\u0000\u0000\u0002\u000e\u0001\u0000\u0000\u0000\u0004\u0013"+
-		"\u0001\u0000\u0000\u0000\u0006\u001b\u0001\u0000\u0000\u0000\b&\u0001"+
-		"\u0000\u0000\u0000\n-\u0001\u0000\u0000\u0000\f\r\u0003\u0002\u0001\u0000"+
-		"\r\u0001\u0001\u0000\u0000\u0000\u000e\u0011\u0003\u0004\u0002\u0000\u000f"+
-		"\u0010\u0005\u0002\u0000\u0000\u0010\u0012\u0003\u0002\u0001\u0000\u0011"+
-		"\u000f\u0001\u0000\u0000\u0000\u0011\u0012\u0001\u0000\u0000\u0000\u0012"+
-		"\u0003\u0001\u0000\u0000\u0000\u0013\u0018\u0003\u0006\u0003\u0000\u0014"+
-		"\u0015\u0005\u0003\u0000\u0000\u0015\u0017\u0003\u0006\u0003\u0000\u0016"+
-		"\u0014\u0001\u0000\u0000\u0000\u0017\u001a\u0001\u0000\u0000\u0000\u0018"+
-		"\u0016\u0001\u0000\u0000\u0000\u0018\u0019\u0001\u0000\u0000\u0000\u0019"+
-		"\u0005\u0001\u0000\u0000\u0000\u001a\u0018\u0001\u0000\u0000\u0000\u001b"+
-		" \u0003\b\u0004\u0000\u001c\u001d\u0005\u0004\u0000\u0000\u001d\u001f"+
-		"\u0003\b\u0004\u0000\u001e\u001c\u0001\u0000\u0000\u0000\u001f\"\u0001"+
-		"\u0000\u0000\u0000 \u001e\u0001\u0000\u0000\u0000 !\u0001\u0000\u0000"+
-		"\u0000!\u0007\u0001\u0000\u0000\u0000\" \u0001\u0000\u0000\u0000#$\u0005"+
-		"\u0005\u0000\u0000$\'\u0003\b\u0004\u0000%\'\u0003\n\u0005\u0000&#\u0001"+
-		"\u0000\u0000\u0000&%\u0001\u0000\u0000\u0000\'\t\u0001\u0000\u0000\u0000"+
-		"(.\u0005\u0001\u0000\u0000)*\u0005\u0006\u0000\u0000*+\u0003\u0000\u0000"+
-		"\u0000+,\u0005\u0007\u0000\u0000,.\u0001\u0000\u0000\u0000-(\u0001\u0000"+
-		"\u0000\u0000-)\u0001\u0000\u0000\u0000.\u000b\u0001\u0000\u0000\u0000"+
-		"\u0005\u0011\u0018 &-";
+		"\u0005\u0007\u0005\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0001\u0001"+
+		"\u0001\u0001\u0001\u0003\u0001\u0013\b\u0001\u0001\u0002\u0001\u0002\u0001"+
+		"\u0002\u0005\u0002\u0018\b\u0002\n\u0002\f\u0002\u001b\t\u0002\u0001\u0003"+
+		"\u0001\u0003\u0001\u0003\u0005\u0003 \b\u0003\n\u0003\f\u0003#\t\u0003"+
+		"\u0001\u0004\u0001\u0004\u0001\u0004\u0003\u0004(\b\u0004\u0001\u0005"+
+		"\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0003\u0005/\b\u0005"+
+		"\u0001\u0005\u0000\u0000\u0006\u0000\u0002\u0004\u0006\b\n\u0000\u0000"+
+		"/\u0000\f\u0001\u0000\u0000\u0000\u0002\u000f\u0001\u0000\u0000\u0000"+
+		"\u0004\u0014\u0001\u0000\u0000\u0000\u0006\u001c\u0001\u0000\u0000\u0000"+
+		"\b\'\u0001\u0000\u0000\u0000\n.\u0001\u0000\u0000\u0000\f\r\u0003\u0002"+
+		"\u0001\u0000\r\u000e\u0005\u0000\u0000\u0001\u000e\u0001\u0001\u0000\u0000"+
+		"\u0000\u000f\u0012\u0003\u0004\u0002\u0000\u0010\u0011\u0005\u0001\u0000"+
+		"\u0000\u0011\u0013\u0003\u0002\u0001\u0000\u0012\u0010\u0001\u0000\u0000"+
+		"\u0000\u0012\u0013\u0001\u0000\u0000\u0000\u0013\u0003\u0001\u0000\u0000"+
+		"\u0000\u0014\u0019\u0003\u0006\u0003\u0000\u0015\u0016\u0005\u0002\u0000"+
+		"\u0000\u0016\u0018\u0003\u0006\u0003\u0000\u0017\u0015\u0001\u0000\u0000"+
+		"\u0000\u0018\u001b\u0001\u0000\u0000\u0000\u0019\u0017\u0001\u0000\u0000"+
+		"\u0000\u0019\u001a\u0001\u0000\u0000\u0000\u001a\u0005\u0001\u0000\u0000"+
+		"\u0000\u001b\u0019\u0001\u0000\u0000\u0000\u001c!\u0003\b\u0004\u0000"+
+		"\u001d\u001e\u0005\u0003\u0000\u0000\u001e \u0003\b\u0004\u0000\u001f"+
+		"\u001d\u0001\u0000\u0000\u0000 #\u0001\u0000\u0000\u0000!\u001f\u0001"+
+		"\u0000\u0000\u0000!\"\u0001\u0000\u0000\u0000\"\u0007\u0001\u0000\u0000"+
+		"\u0000#!\u0001\u0000\u0000\u0000$%\u0005\u0004\u0000\u0000%(\u0003\b\u0004"+
+		"\u0000&(\u0003\n\u0005\u0000\'$\u0001\u0000\u0000\u0000\'&\u0001\u0000"+
+		"\u0000\u0000(\t\u0001\u0000\u0000\u0000)/\u0005\u0007\u0000\u0000*+\u0005"+
+		"\u0005\u0000\u0000+,\u0003\u0002\u0001\u0000,-\u0005\u0006\u0000\u0000"+
+		"-/\u0001\u0000\u0000\u0000.)\u0001\u0000\u0000\u0000.*\u0001\u0000\u0000"+
+		"\u0000/\u000b\u0001\u0000\u0000\u0000\u0005\u0012\u0019!\'.";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

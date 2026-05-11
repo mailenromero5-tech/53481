@@ -1,6 +1,6 @@
 import LogicFormulaLexer from "./generated/LogicFormulaLexer.js";
 import LogicFormulaParser from "./generated/LogicFormulaParser.js";
-import { CustomLogicFormulaVisitor } from "./CustomCalculatorVisitor.js";
+import { CustomLogicFormulaVisitor } from "./CustomLogicFormulaVisitor.js";
 import antlr4, { CharStreams, CommonTokenStream} from "antlr4";
 import readline from 'readline';
 import fs from 'fs';
@@ -10,7 +10,7 @@ async function main() {
 
     //  Leer desde input.txt
     try {
-        input = fs.readFileSync('inputs/input.txt', 'utf8')
+        input = fs.readFileSync('input.txt', 'utf8')
     } catch (err) {
         // Si no es posible leer el archivo, solicitar la entrada del usuario por teclado
         input = await leerCadena(); // Simula lectura síncrona
@@ -22,21 +22,51 @@ async function main() {
     let lexer = new LogicFormulaLexer(inputStream);
     let tokenStream = new CommonTokenStream(lexer);
     let parser = new LogicFormulaParser(tokenStream);
-    let tree = parser.formula ();
+
+    const erroresLexicos = [];
+    const erroresSintacticos = [];
+
+    lexer.removeErrorListeners();
+    lexer.addErrorListener({
+        syntaxError: (recognizer, offendingSymbol, line, column, msg) => {
+            erroresLexicos.push({ line, column, msg });
+        }
+    });
+
+    parser.removeErrorListeners();
+    parser.addErrorListener({
+        syntaxError: (recognizer, offendingSymbol, line, column, msg) => {
+            erroresSintacticos.push({ line, column, msg });
+        },
+        reportAmbiguity: () => {},
+        reportAttemptingFullContext: () => {},
+        reportContextSensitivity: () => {}
+    });
+
+    let tree = parser.formula();
+
+    // Imprimo tabla
+    imprimirTablaTokens(tokenStream, parser);
+
+    // Verifico errores
+    if (erroresLexicos.length > 0 || erroresSintacticos.length > 0) {
+        console.log("\nErrores encontrados:\n");
+
+        erroresLexicos.forEach((e) => {
+            console.log(`Error léxico en línea ${e.line}, columna ${e.column}: ${e.msg}`);
+        });
+
+        erroresSintacticos.forEach((e) => {
+            console.log(`Error sintáctico en línea ${e.line}, columna ${e.column}: ${e.msg}`);
+        });
+
+        return;
+    }
     
-    // Verifico si se produjeron errores
-    if (parser.syntaxErrorsCount > 0) {
-        console.error("\nSe encontraron errores de sintaxis en la entrada.");
-    } 
-    else {
         console.log("\nEntrada válida.");
-        imprimirTablaTokens(tokenStream, parser);
         const cadena_tree = tree.toStringTree(parser.ruleNames);
         console.log(`Árbol de derivación: ${cadena_tree}`);
 
-        // Utilizo un listener y un walker para recorrer el arbol e indicar cada vez que reconoce una sentencia (stat)
-        //const listener = new CustomCalculatorListener();
-        // ParseTreeWalker.DEFAULT.walk(listener, tree);
 
         // Utilizo un visitor para visitar los nodos que me interesan de mi arbol
         const visitor = new CustomLogicFormulaVisitor();
@@ -55,7 +85,6 @@ async function main() {
      const result = Function("context", `return ${codigoJS};`)(context);
      console.log(`console.log(result); // ${result}`);
     
-    }
 }
 
 function leerCadena() {
@@ -86,10 +115,10 @@ function imprimirTablaTokens(tokenStream, parser) {
 
         const nombreToken =
             parser.symbolicNames[token.type] ||
-            parser.literalNames[token.type];
+            parser.literalNames[token.type] ||
+            "DESCONOCIDO" ;
 
-        console.log(
-            `Lexema: ${token.text} \t=> Token: ${nombreToken}`
+        console.log(`Lexema: ${token.text} \t=> Token: ${nombreToken}`
         );
     });
 }

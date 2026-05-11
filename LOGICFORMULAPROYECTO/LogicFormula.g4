@@ -2,7 +2,7 @@ grammar LogicFormula;
 
 //Gramatica
 formula
-        :implication 
+        :implication EOF
         ; 
 
 implication
@@ -15,20 +15,23 @@ conjunction
         :negation (AND negation)*                   #conjunc
         ;
 negation
-        : NOT negation                              #nega
+        : UNARY_OP negation                              #nega
         | primary                                   #primaryrule
         ; 
 primary 
         : VARIABLE                                  #variableExpr
-        | LPAREN formula RPAREN        #parens 
+        // Se usa implication en lugar de formula
+        // porque formula contiene EOF y dentro de paréntesis no debe esperarse el fin de archivo
+        | LPAREN implication RPAREN        #parens 
         ; 
 
 //Lexemas
-VARIABLE: [a-zA-Z][a-zA-Z0-9]* ;
 IMPLIES: '->' ;
 OR: '|';
 AND: '^' ;
-NOT:'¬';  
+UNARY_OP:'¬';  
 LPAREN: '(' ;
 RPAREN: ')' ; 
+VARIABLE: [a-zA-Z][a-zA-Z0-9]* ;
 WS: [ \t\r\n]+ -> skip ;
+
