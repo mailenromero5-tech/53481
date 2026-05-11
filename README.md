@@ -68,11 +68,11 @@ Y luego:
 
 node index.js
 
-El resultado en un ejemplo corrcto es:
+El resultado en un ejemplo correcto es:
 
 ![](LOGICFORMULAPROYECTO/capturas/ejemplocorrecto1.png)
 
-Caso contrario, si probamos el ejemplo incorrecto 1 nos mostrará la línea del error, el token problemático y la descripción del error detectado y la tabla de lexemas y tokens.
+Caso contrario, si probamos el ejemplo incorrecto 1 nos mostrará la tabla de lexemas y tokens, la liena de error y el token problemático.
 
 ![alt text](LOGICFORMULAPROYECTO/capturas/image-1.png)
 
