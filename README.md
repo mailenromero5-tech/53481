@@ -16,13 +16,14 @@ El analizador permite:
 
 # Aclaraciones IMPORTANTES
 - Uso de | en lugar de v
+
 En la gramática se utilizó el símbolo | para la disyunción lógica porque ANTLR interpretaba la letra v como parte de una variable.
 
 - Uso de '^' para la conjunción
 
 - Uso de '->' para la implicación
 
--Uso de '¬' para la negación
+- Uso de '¬' para la negación
 
 # Configuración Inicial 
 
